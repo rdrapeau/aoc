@@ -5,6 +5,7 @@ def eval_equation(total, right_side):
 	return (
 		eval_equation(total, [right_side[0] + right_side[1]] + right_side[2:])
 		or eval_equation(total, [right_side[0] * right_side[1]] + right_side[2:])
+		# comment out to get part 1
 		or eval_equation(total, [int(str(right_side[0]) + str(right_side[1]))] + right_side[2:])
 	)
 
@@ -17,6 +18,8 @@ def main():
 	running_total = sum(equation[0] for equation in equations if eval_equation(equation[0], equation[1]))
 	print(running_total)
 
+	# part 1: 42283209483350
+	# part 2: 1026766857276279
 
 if __name__ == '__main__':
 	main()
