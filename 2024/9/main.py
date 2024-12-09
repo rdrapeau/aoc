@@ -51,17 +51,6 @@ def compact_disk_part_2(reconstructed_disk, file_sizes, blank_sizes):
 				break
 
 
-def compute_checksum(reconstructed_disk):
-	checksum = 0
-	for i, num in enumerate(reconstructed_disk):
-		if num == '.':
-			continue
-
-		checksum += num * i
-
-	return checksum
-
-
 def main():
 	with open('input.txt') as f:
 		input_string = [int(i) for i in f.read().strip()]
@@ -70,7 +59,7 @@ def main():
 
 	# compact_disk_part_1(reconstructed_disk, file_sizes, blank_sizes)
 	compact_disk_part_2(reconstructed_disk, file_sizes, blank_sizes)
-	print(compute_checksum(reconstructed_disk))
+	print(sum(i * num for i, num in enumerate(reconstructed_disk) if num != '.'))
 
 
 if __name__ == '__main__':
