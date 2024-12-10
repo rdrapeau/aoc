@@ -1,11 +1,9 @@
-
 directions = [
 	(1, 0),
 	(0, 1),
 	(-1, 0),
 	(0, -1)
 ]
-
 
 def find_neighbors(input, position):
 	row, col = position
@@ -21,60 +19,38 @@ def find_neighbors(input, position):
 	return neighbors
 
 
-def walk_path(input, position):
-	final_positions = set()
-	queue = [position]
-	seen = set([position])
-	while len(queue) > 0:
-		row, col = queue.pop()
-		if input[row][col] == 9:
-			final_positions.add((row, col))
-		else:
-			neighbors = find_neighbors(input, (row, col))
-			for neighbor in neighbors:
-				if neighbor not in seen:
-					seen.add(neighbor)
-					queue.append(neighbor)
+def dfs(input, position, path_so_far):
+	row, col = position
+	if input[row][col] == 9:
+		return set([(row, col)]), 1
 
-	return final_positions
-
-
-def dfs(input, position, destination, path_so_far):
-	if position == destination:
-		return 1
-
-	score = 0
+	ends, rating = set(), 0
 	neighbors = find_neighbors(input, position)
 	for neighbor in neighbors:
 		if neighbor not in path_so_far:
 			path_so_far.add(neighbor)
-			score += dfs(input, neighbor, destination, path_so_far)
+			new_ends, new_rating = dfs(input, neighbor, path_so_far)
+			rating += new_rating
+			ends = ends.union(new_ends)
 			path_so_far.remove(neighbor)
 
-	return score
+	return ends, rating
 
 
 def main():
 	with open('input.txt') as f:
 		input = [map(int, list(line.strip())) for line in f.readlines()]
 
-	starting_pos = []
-	for row in range(len(input)):
-		for col in range(len(input[0])):
-			if input[row][col] == 0:
-				starting_pos.append((row, col))
+	starting_pos = [(row, col) for row, row_arr in enumerate(input) for col, value in enumerate(row_arr) if value == 0]
 
-	paths = {}
+	p1, p2 = 0, 0
 	for start in starting_pos:
-		paths[start] = walk_path(input, start)
+		ends, rating = dfs(input, start, set([start]))
+		p1 += len(ends)
+		p2 += rating
 
-	score = 0
-
-	for start in paths:
-		for end in paths[start]:
-			score += dfs(input, start, end, set([start]))
-
-	print(score)
+	print(p1)
+	print(p2)
 
 if __name__ == '__main__':
 	main()
