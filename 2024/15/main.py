@@ -17,8 +17,8 @@ def find_start(grid):
 				return (row, col)
 
 
-def get_next(cur, direction, negate=False):
-	return (cur[0] + direction[0], cur[1] + direction[1]) if not negate else (cur[0] - direction[0], cur[1] - direction[1])
+def get_next(cur, direction):
+	return (cur[0] + direction[0], cur[1] + direction[1])
 
 
 def find_box_positions(grid, pos):
