@@ -26,7 +26,7 @@ def bfs(edges, start, end):
 
 
 cache = {}
-def get_length(moves, possible_paths, cur_depth, max_limit):
+def get_length(moves, all_possible_paths, cur_depth, max_limit):
 	c_key = (moves, cur_depth)
 	if c_key in cache:
 		return cache[c_key]
@@ -34,11 +34,11 @@ def get_length(moves, possible_paths, cur_depth, max_limit):
 	length = 0
 	cur_pos = 'A' if cur_depth == 0 else 'a'
 	for move in moves:
-		possible_moves = list(possible_paths[cur_pos][move])
+		possible_moves = all_possible_paths[cur_pos][move]
 		if cur_depth == max_limit:
 			length += len(possible_moves[0])
 		else:
-			length += min([get_length(possible_move, possible_paths, cur_depth + 1, max_limit) for possible_move in possible_moves])
+			length += min([get_length(possible_move, all_possible_paths, cur_depth + 1, max_limit) for possible_move in possible_moves])
 
 		cur_pos = move
 
@@ -71,26 +71,26 @@ edges = {
 	'a': [('v', '>'), ('<', '^')]
 }
 
-possible_paths = {}
+all_possible_paths = {}
 for a in num_pad:
-	possible_paths[a] = {}
+	all_possible_paths[a] = {}
 	for b in num_pad:
 		if a == b:
-			possible_paths[a][b] = ['a']
+			all_possible_paths[a][b] = ['a']
 		else:
-			possible_paths[a][b] = [x + 'a' for x in bfs(edges, a, b)]
+			all_possible_paths[a][b] = [x + 'a' for x in bfs(edges, a, b)]
 
 for a in dir_pad:
-	possible_paths[a] = {}
+	all_possible_paths[a] = {}
 	for b in dir_pad:
 		if a == b:
-			possible_paths[a][b] = ['a']
+			all_possible_paths[a][b] = ['a']
 		else:
-			possible_paths[a][b] = [x + 'a' for x in bfs(edges, a, b)]
+			all_possible_paths[a][b] = [x + 'a' for x in bfs(edges, a, b)]
 
 res = 0
 for code in codes:
-	move_length = get_length(code, possible_paths, 0, 25)
+	move_length = get_length(code, all_possible_paths, 0, 25)
 	res += int(code[:3]) * move_length
 
 print(res)
