@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 def simulate(secret, steps):
 	prices = [secret % 10]
 	change_in_prices = [None]
@@ -15,18 +17,18 @@ with open('input.txt') as f:
 	data = [int(x.strip()) for x in f.readlines()]
 
 p1 = 0
-sequences = {}
+sequences = defaultdict(int)
+done = set()
 for buyer in data:
 	secret, prices, change_in_prices = simulate(buyer, 2000)
 	seen = set()
-	for i in range(len(change_in_prices) - 3):
-		sequence = change_in_prices[i:i + 4]
-		k = tuple(sequence)
-		if k in seen:
+	for i in range(1, len(change_in_prices) - 3):
+		sequence = tuple(change_in_prices[i:i + 4])
+		if sequence in seen:
 			continue
 
-		seen.add(k)
-		sequences[k] = sequences.get(k, 0) + (prices[i + 3] or 0)
+		seen.add(sequence)
+		sequences[sequence] += prices[i + 3] or 0
 
 	p1 += secret
 
