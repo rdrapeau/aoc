@@ -3,10 +3,8 @@ import networkx as nx
 with open('input.txt') as f:
 	data = [tuple(x.strip().split('-')) for x in f.readlines()]
 
-all_edges = set(data + [tuple([x[1], x[0]]) for x in data])
-
 G = nx.Graph()
-G.add_edges_from(all_edges)
+G.add_edges_from(data)
 
 all_cliques = list(nx.enumerate_all_cliques(G))
 print(sum(
