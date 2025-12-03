@@ -1,27 +1,24 @@
-def process_row(row, index, selected, max_so_far):
-	if len(selected) == 12:
-		return max(max_so_far, int(''.join(selected)))
+import functools
 
-	for i in range(index, len(row)):
-		selected.append(row[i])
+@functools.cache
+def process_row(row, index, remaining):
+	if remaining == 0 or index >= len(row):
+		return ""
 
-		possible_max = int(''.join(selected + ['9'] * (12 - len(selected))))
-		if possible_max > max_so_far:
-			max_so_far = process_row(row, i + 1, selected, max_so_far)
+	a = row[index] + process_row(row, index + 1, remaining - 1)
+	b = process_row(row, index + 1, remaining)
 
-		selected.pop()
+	return max((len(a), a), (len(b), b))[1]
 
-	return max_so_far
 
 # Takes about ~10 mins
 def main():
-	ans = 0
-
 	with open('input.txt') as f:
 		data = f.readlines()
 		
+		ans = 0
 		for row in data:
-			ans += process_row(row.strip(), 0, [], -1)
+			ans += int(process_row(row.strip(), 0, 12))
 			print(ans)
 
 	print(ans)
