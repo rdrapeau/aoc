@@ -8,10 +8,12 @@ def process_row(row, index, remaining):
 	a = row[index] + process_row(row, index + 1, remaining - 1)
 	b = process_row(row, index + 1, remaining)
 
-	return max((len(a), a), (len(b), b))[1]
+	a_num = int(a) if a != '' else 0
+	b_num = int(b) if b != '' else 0
+
+	return a if a_num > b_num else b
 
 
-# Takes about ~10 mins
 def main():
 	with open('input.txt') as f:
 		data = f.readlines()
@@ -19,7 +21,6 @@ def main():
 		ans = 0
 		for row in data:
 			ans += int(process_row(row.strip(), 0, 12))
-			print(ans)
 
 	print(ans)
 
