@@ -1,4 +1,4 @@
-import scipy
+import scipy, math
 
 
 def main():
@@ -16,9 +16,14 @@ def main():
 		distances.sort(reverse=True)
 		dset = scipy.cluster.hierarchy.DisjointSet(coords)
 
+		i = 0
 		while len(dset.subsets()) > 1:
+			if i == 1000:
+				print(math.prod(sorted([len(s) for s in dset.subsets()])[-3:]))
+
 			_, a, b = distances.pop()
 			dset.merge(a, b)
+			i += 1
 
 		print(a[0] * b[0])
 
