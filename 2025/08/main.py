@@ -1,4 +1,5 @@
-import scipy, math
+def dist(x, y):
+	return (x[0] - y[0]) ** 2 + (x[1] - y[1]) ** 2 + (x[2] - y[2]) ** 2
 
 
 def main():
@@ -6,26 +7,24 @@ def main():
 		data = f.readlines()
 		coords = [tuple([int(x) for x in line.strip().split(',')]) for line in data]
 
-		distances = [
-			(
-				(a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2 + (a[2] - b[2]) ** 2,
-				a,
-				b
-			) for a in coords for b in coords if a > b
-		]
-		distances.sort(reverse=True)
-		dset = scipy.cluster.hierarchy.DisjointSet(coords)
+		distances = sorted([(dist(a, b), a, b) for a in coords for b in coords if a > b])
 
-		i = 0
-		while len(dset.subsets()) > 1:
-			if i == 1000:
-				print(math.prod(sorted([len(s) for s in dset.subsets()])[-3:]))
+		circuits = {}
+		for i, x in enumerate(coords):
+			circuits[x] = i
 
-			_, a, b = distances.pop()
-			dset.merge(a, b)
-			i += 1
+		for i in range(len(distances)):
+			_, a, b = distances[i]
 
-		print(a[0] * b[0])
+			new_min = min([circuits[a], circuits[b]])
+			old = [circuits[a], circuits[b]]
+			for node in circuits:
+				if circuits[node] in old:
+					circuits[node] = new_min
+
+			if min(circuits.values()) == max(circuits.values()):
+				print(a[0] * b[0])
+				break
 
 
 if __name__ == '__main__':
