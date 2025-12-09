@@ -7,11 +7,8 @@ def main():
 		data = f.readlines()
 		coords = [tuple([int(x) for x in line.strip().split(',')]) for line in data]
 
-		distances = sorted([(dist(a, b), a, b) for a in coords for b in coords if a > b])
-
-		circuits = {}
-		for i, x in enumerate(coords):
-			circuits[x] = i
+		distances = sorted([(dist(a, b), a, b) for i, a in enumerate(coords) for j, b in enumerate(coords) if i > j])
+		circuits = {x:i for i, x in enumerate(coords)}
 
 		for i in range(len(distances)):
 			_, a, b = distances[i]
