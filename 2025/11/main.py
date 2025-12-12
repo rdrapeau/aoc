@@ -9,18 +9,22 @@ def main():
 			g[parsed[0].strip()] = parsed[1].strip().split()
 
 	@functools.cache
-	def count_paths(start, end):
-		if start == end:
+	def count_paths(start, end, seen_fft, seen_dac):
+		if start == end and seen_fft and seen_dac:
 			return 1
 
-		return sum(count_paths(neighbor, end) for neighbor in g[start])
+		return sum(
+			count_paths(
+				neighbor,
+				end,
+				seen_fft or start == 'fft',
+				seen_dac or start == 'dac'
+			)
+			for neighbor in g[start]
+		)
 
-
-	print(count_paths('you', 'out'))
-	print(
-		count_paths('svr', 'fft') * count_paths('fft', 'dac') * count_paths('dac', 'out')
-		+ count_paths('svr', 'dac') * count_paths('dac', 'fft') * count_paths('fft', 'out')
-	)
+	print(count_paths('you', 'out', True, True))
+	print(count_paths('svr', 'out', False, False))
 
 
 if __name__ == '__main__':
